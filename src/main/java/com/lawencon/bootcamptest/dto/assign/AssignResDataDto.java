@@ -8,9 +8,7 @@ import com.lawencon.bootcamptest.dto.user.UserResDataDto;
 public class AssignResDataDto {
     
     private UserResDataDto userCandidate;
-
     private UserResDataDto userReviewer;
-
-    
+    private QuestionPackageResDataDto questionPackage;
 	
 }
