@@ -45,10 +45,15 @@ public abstract class BaseRepository{
     }
     
     public <T extends BaseModel> T getByIdAndDetach(Class<T> entityClass,String id) {
-    	T clazz = getConnection().find(entityClass, id);
-    	getConnection().detach(clazz);
-    	
-    	return clazz;
+    	T clazz = null;
+		try {
+			clazz = getConnection().find(entityClass, id);
+			getConnection().detach(clazz);
+
+			return clazz;
+		} catch (Exception e) {
+			return null;
+		}
     }
 
 	public <T extends BaseModel> T getReferennceById(Class<T> entityClass,String id) {
@@ -231,6 +236,7 @@ public abstract class BaseRepository{
 							Object idFk = tableOthers.get(OptionalBuilder.ID_FK);
 							Optional<Object> optIdFk = Optional.ofNullable(idFk);
 
+							// check attribut table other
 							if(optIdOther.isPresent() && optTableOther.isPresent() && optIdFk.isPresent()){
 								joinString.append(column.getKey()).append(".").append(idFk)
 								.append(" = ")
@@ -316,6 +322,8 @@ public abstract class BaseRepository{
 
 		return query;
 	}
+
+	
 
 	
 }

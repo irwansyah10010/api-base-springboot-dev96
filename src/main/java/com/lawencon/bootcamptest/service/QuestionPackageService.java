@@ -160,6 +160,8 @@ public class QuestionPackageService {
         baseListDto.setModel(QuestionPackage.class);
         baseListDto.setTotal(countOfquestionPackages);
         baseListDto.setData(questionPackageResDataDtos);
+        baseListDto.setPage(startPosition);
+        baseListDto.setLimit(limit);
 
         return baseListDto;
     }

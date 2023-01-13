@@ -8,6 +8,5 @@ public class LoginResDataDto {
     private String id;
     private String fullName;
     private String roleCode;
-
     private String token;
 }

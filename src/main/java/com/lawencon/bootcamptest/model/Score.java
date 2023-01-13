@@ -12,26 +12,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name="tb_assign_detail")
+@Table(name="tb_score")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class AssignDetail extends BaseModel{
-
-	@Column(name="accumulation_score")
+public class Score extends BaseModel{
+    
+	@Column(name = "score")
 	private Float score;
-	
-	@Column(name="note")
-	private String note;
 
-	@Column(name="status")
-	private String status;
+    @ManyToOne
+	@JoinColumn(name="question_package_detail_id")
+	private QuestionPackageDetail questionPackage;
 	
 	@ManyToOne
-	@JoinColumn(name="question_package_id")
-	private QuestionPackage questionPackage;
-	
-	@ManyToOne
-	@JoinColumn(name="assign_id")
-	private Assign assign;
-	
+	@JoinColumn(name="assign_detail_id")
+	private AssignDetail assignDetail;
 }

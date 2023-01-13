@@ -1,14 +1,17 @@
 package com.lawencon.bootcamptest.dto.assign;
 
-import java.time.LocalDate;
+import java.util.List;
 
-import com.lawencon.bootcamptest.dto.questionpackage.QuestionPackageResDataDto;
+import com.lawencon.bootcamptest.dto.assigndetail.AssignDetailResDataDto;
 import com.lawencon.bootcamptest.dto.user.UserResDataDto;
 
+import lombok.Data;
+
+@Data
 public class AssignResDataDto {
     
+    private String id;
     private UserResDataDto userCandidate;
     private UserResDataDto userReviewer;
-    private QuestionPackageResDataDto questionPackage;
-	
+    private List<AssignDetailResDataDto> listAssignDetail;
 }
