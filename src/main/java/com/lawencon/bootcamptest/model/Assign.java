@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.lawencon.bootcamptest.base.BaseModel;
+import com.lawencon.bootcamptest.model.person.User;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

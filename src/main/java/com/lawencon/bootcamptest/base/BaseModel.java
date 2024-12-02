@@ -39,13 +39,9 @@ public abstract class BaseModel{
 	@Version
 	@Column(name = "versions")
 	private Integer version;
-	
-	@Column(name = "is_active")
-	private Boolean isActive;
 
 	@PrePersist
 	public void prePersist(){
-		this.isActive = true;
 		this.createdAt = LocalDateTime.now();
 	}
 

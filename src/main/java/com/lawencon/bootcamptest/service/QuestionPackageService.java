@@ -26,11 +26,11 @@ import com.lawencon.bootcamptest.dto.questionpackage.QuestionPackageInsertReqDto
 import com.lawencon.bootcamptest.dto.questionpackage.QuestionPackageResDataDto;
 import com.lawencon.bootcamptest.dto.questionpackage.QuestionPackageUpdateReqDto;
 import com.lawencon.bootcamptest.dto.questionpackagedetail.QuestionPackageDetailResDataDto;
-import com.lawencon.bootcamptest.model.QuestionBank;
-import com.lawencon.bootcamptest.model.QuestionMultipleChoice;
-import com.lawencon.bootcamptest.model.QuestionPackage;
-import com.lawencon.bootcamptest.model.QuestionPackageDetail;
-import com.lawencon.bootcamptest.model.QuestionType;
+import com.lawencon.bootcamptest.model.TestCategory;
+import com.lawencon.bootcamptest.model.doc.QuestionBank;
+import com.lawencon.bootcamptest.model.doc.QuestionMultipleChoice;
+import com.lawencon.bootcamptest.model.doc.QuestionPackage;
+import com.lawencon.bootcamptest.model.doc.QuestionPackageDetail;
 
 @Service
 public class QuestionPackageService {
@@ -112,7 +112,7 @@ public class QuestionPackageService {
                 questionPackageDetailResDataDto.setQuestionId(questionBank.getId());
                 questionPackageDetailResDataDto.setQuestion(questionBank.getQuestion());
 
-                QuestionType questionType = questionBank.getQuestionType();
+                TestCategory questionType = questionBank.getQuestionType();
                 questionPackageDetailResDataDto.setTypeOfQuestion(questionType.getQuestionTypeName());
 
                 

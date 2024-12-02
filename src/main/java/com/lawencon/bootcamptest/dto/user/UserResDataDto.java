@@ -3,7 +3,7 @@ package com.lawencon.bootcamptest.dto.user;
 import java.time.LocalDate;
 
 import com.lawencon.bootcamptest.dto.role.RoleResDataDto;
-import com.lawencon.bootcamptest.model.File;
+import com.lawencon.bootcamptest.model.doc.File;
 
 import lombok.Data;
 

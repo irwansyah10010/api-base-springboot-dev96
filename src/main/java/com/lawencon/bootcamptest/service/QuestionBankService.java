@@ -24,9 +24,9 @@ import com.lawencon.bootcamptest.dto.questionbank.QuestionBankInsertReqDto;
 import com.lawencon.bootcamptest.dto.questionbank.QuestionBankResDataDto;
 import com.lawencon.bootcamptest.dto.questionbank.QuestionBankUpdateReqDto;
 import com.lawencon.bootcamptest.dto.questionmultiplechoice.QuestionMultipleChoiceResDataDto;
-import com.lawencon.bootcamptest.model.QuestionBank;
-import com.lawencon.bootcamptest.model.QuestionMultipleChoice;
-import com.lawencon.bootcamptest.model.QuestionType;
+import com.lawencon.bootcamptest.model.TestCategory;
+import com.lawencon.bootcamptest.model.doc.QuestionBank;
+import com.lawencon.bootcamptest.model.doc.QuestionMultipleChoice;
 
 @Service
 public class QuestionBankService {
@@ -73,7 +73,7 @@ public class QuestionBankService {
 
         for (int i = 0; i < questionBanks.size(); i++) {
             QuestionBank questionBank = questionBanks.get(i);
-            QuestionType questionType = questionBank.getQuestionType();
+            TestCategory questionType = questionBank.getQuestionType();
 
             QuestionBankResDataDto questionBankResDataDto = new QuestionBankResDataDto();
 
@@ -124,7 +124,7 @@ public class QuestionBankService {
         BaseInsertResDto baseInsertResDto = new BaseInsertResDto();
 
         if(resDto.getQuestionTypeId() != null){
-            QuestionType questionType = questionTypeDao.getByIdAndDetach(QuestionType.class, resDto.getQuestionTypeId());
+            TestCategory questionType = questionTypeDao.getByIdAndDetach(TestCategory.class, resDto.getQuestionTypeId());
     
             questionBank.setQuestion(resDto.getQuestion());
             questionBank.setQuestionType(questionType);
@@ -173,8 +173,8 @@ public class QuestionBankService {
 
             //int countOfMultiple = 0;
             if(resDto.getQuestionTypeId() != null  && !questionBank.getQuestionType().getId().equals(resDto.getQuestionTypeId())){
-                QuestionType questionType = questionTypeDao.getByIdAndDetach(QuestionType.class, resDto.getQuestionTypeId());
-                Optional<QuestionType> optQType = Optional.ofNullable(questionType);
+                TestCategory questionType = questionTypeDao.getByIdAndDetach(TestCategory.class, resDto.getQuestionTypeId());
+                Optional<TestCategory> optQType = Optional.ofNullable(questionType);
 
                 if(optQType.isPresent()){
                     questionBank.setQuestionType(questionType);

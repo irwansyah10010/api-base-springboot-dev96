@@ -1,6 +1,5 @@
-package com.lawencon.bootcamptest.model;
+package com.lawencon.bootcamptest.model.person;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,16 +11,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name="tb_question_bank")
+@Table(name="tb_reviewer")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class QuestionBank extends BaseModel{
+public class Reviewer extends BaseModel{
+    
+    @ManyToOne
+	@JoinColumn(name="user_id")
+    private User user;
 
-	@Column(name = "question")
-	private String question;
-	
-	@ManyToOne
-	@JoinColumn(name = "question_type_id")
-	private QuestionType questionType;
-	
+	@JoinColumn(name="note")
+    private String note;
 }

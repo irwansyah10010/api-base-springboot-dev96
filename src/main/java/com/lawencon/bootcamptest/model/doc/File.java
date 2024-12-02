@@ -1,4 +1,4 @@
-package com.lawencon.bootcamptest.model;
+package com.lawencon.bootcamptest.model.doc;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,14 +10,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name="tb_question_type")
+@Table(name = "tb_file")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class QuestionType extends BaseModel{
-
-	@Column(name="question_type_code")
-	private String questionTypeCode;
+public class File extends BaseModel{
 	
-	@Column(name="question_type_name")
-	private String questionTypeName;
+	@Column(name = "url_file")
+	private String urlFile;
+	
+	@Column(name = "ext")
+	private String ext;
+	
 }

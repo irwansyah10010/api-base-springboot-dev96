@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +27,10 @@ import com.lawencon.bootcamptest.dto.user.UserInsertReqDto;
 import com.lawencon.bootcamptest.dto.user.UserResDataDto;
 import com.lawencon.bootcamptest.dto.user.UserUpdateReqDto;
 import com.lawencon.bootcamptest.model.Role;
-import com.lawencon.bootcamptest.model.User;
+import com.lawencon.bootcamptest.model.person.User;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
 
 	private UserDao userDao;
 	private RoleDao roleDao;
@@ -249,5 +252,12 @@ public class UserService {
 		}
 
 		return baseDeleteResDto;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(username, null, null);
+
+		throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
 	}
 }

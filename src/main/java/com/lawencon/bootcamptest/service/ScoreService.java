@@ -20,8 +20,8 @@ import com.lawencon.bootcamptest.dto.score.ScoreInsertReqDto;
 import com.lawencon.bootcamptest.dto.score.ScoreResDataDto;
 import com.lawencon.bootcamptest.dto.score.ScoreUpdateReqDto;
 import com.lawencon.bootcamptest.model.AssignDetail;
-import com.lawencon.bootcamptest.model.QuestionPackageDetail;
 import com.lawencon.bootcamptest.model.Score;
+import com.lawencon.bootcamptest.model.doc.QuestionPackageDetail;
 
 public class ScoreService {
 

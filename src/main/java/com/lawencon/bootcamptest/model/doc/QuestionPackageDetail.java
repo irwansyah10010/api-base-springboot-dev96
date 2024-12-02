@@ -1,6 +1,5 @@
-package com.lawencon.bootcamptest.model;
+package com.lawencon.bootcamptest.model.doc;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,16 +11,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name="tb_question_multiple_choice")
+@Table(name="tb_question_package_detail")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class QuestionMultipleChoice extends BaseModel{
-
-	@Column(name = "question_multiple_answer")
-	private String questionMultipleAnswer;
-
-	@Column(name = "question_answer")
-	private Boolean questionAnswer;
+public class QuestionPackageDetail  extends BaseModel{
+	
+	@ManyToOne
+	@JoinColumn(name="question_package_id")
+	private QuestionPackage questionPackage;
 	
 	@ManyToOne
 	@JoinColumn(name="question_bank_id")

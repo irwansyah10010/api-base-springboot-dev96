@@ -1,4 +1,4 @@
-package com.lawencon.bootcamptest.model;
+package com.lawencon.bootcamptest.model.doc;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

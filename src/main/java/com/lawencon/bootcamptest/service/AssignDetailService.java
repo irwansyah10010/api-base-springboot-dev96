@@ -25,7 +25,7 @@ import com.lawencon.bootcamptest.dto.assigndetail.AssignDetailResDataDto;
 import com.lawencon.bootcamptest.dto.questionpackage.QuestionPackageResDataDto;
 import com.lawencon.bootcamptest.model.Assign;
 import com.lawencon.bootcamptest.model.AssignDetail;
-import com.lawencon.bootcamptest.model.QuestionPackage;
+import com.lawencon.bootcamptest.model.doc.QuestionPackage;
 
 @Service
 public class AssignDetailService {

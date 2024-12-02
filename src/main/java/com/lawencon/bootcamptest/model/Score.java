@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.lawencon.bootcamptest.base.BaseModel;
+import com.lawencon.bootcamptest.model.doc.QuestionPackageDetail;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
