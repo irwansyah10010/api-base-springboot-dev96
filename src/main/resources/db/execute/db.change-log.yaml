@@ -1,0 +1,31 @@
+databaseChangeLog:
+- changeSet:
+      id: create-schema
+      author: irwansyah
+      # preConditions:
+      #   - onFail: MARK_RAN
+      #     not:
+      #       tableExists:
+      #         tableName: tb_role
+      changes:
+        - sqlFile:
+            path: db/schema/schema.sql
+            relativeToChangelogFile: false
+      rollback:
+        - sqlFile:
+            path: db/rollback/rollback.sql
+            relativeToChangelogFile: false
+- changeSet:
+      id: create-data
+      author: irwansyah
+      changes:
+        - sqlFile:
+            path: db/data/data.sql
+            relativeToChangelogFile: false
+- changeSet:
+      id: create-data-user
+      author: irwansyah
+      changes:
+        - sqlFile:
+            path: db/data/data-user.sql
+            relativeToChangelogFile: false

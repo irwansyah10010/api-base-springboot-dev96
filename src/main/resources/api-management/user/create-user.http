@@ -1,0 +1,13 @@
+POST http://localhost:8080/btest/user/
+Content-Type: application/json
+
+{
+    "data":{
+        "username": "irwansyah.irwansyah",
+        "fullName": "Irwansyah",
+        "placeOfBirth": "Bali",
+        "dateOfBirth": "1990-12-12",
+        "email": "irwan@newbie.com",
+        "role": "AD"
+    }
+}

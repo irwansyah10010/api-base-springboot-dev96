@@ -1,0 +1,8 @@
+databaseChangeLog:
+- changeSet:
+      id: rollback-schema
+      author: irwansyah
+      changes:
+        - sqlFile:
+            path: db/drop/drop.sql
+            relativeToChangelogFile: false

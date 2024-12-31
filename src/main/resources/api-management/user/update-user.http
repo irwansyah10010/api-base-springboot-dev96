@@ -1,0 +1,11 @@
+PUT http://localhost:8080/btest/user/
+Content-Type: application/json
+
+{
+    "data":{
+        "username": "irwansyah.irwansyah",
+        "phoneNumber": "08767687",
+        "address": "desa ponari",
+        "role": "AD"
+    }
+}
