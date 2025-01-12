@@ -1,6 +1,5 @@
 package com.lawencon.bootcamptest.business.user.dto.detail;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -19,12 +18,15 @@ public class UserResponse {
 	private String email;
     private String phoneNumber;
     private String address;
+    private Boolean isActive;
 
     private String role;
+    private String roleName;
 
     private String profile;
 
     private String statusId;
     private Boolean enabled;
     private Boolean isLoginWeb;
+    
 }

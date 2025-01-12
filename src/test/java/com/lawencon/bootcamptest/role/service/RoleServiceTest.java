@@ -1,4 +1,4 @@
-package com.lawencon.bootcamptest.service;
+package com.lawencon.bootcamptest.role.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lawencon.bootcamptest.base.dto.BaseResponse;
-import com.lawencon.bootcamptest.business.role.dao.RoleDao;
+import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImpl;
 import com.lawencon.bootcamptest.business.role.dto.detail.RoleResponse;
 import com.lawencon.bootcamptest.business.role.dto.list.RolesResponse;
 import com.lawencon.bootcamptest.business.role.model.Role;
@@ -28,7 +28,7 @@ import com.lawencon.bootcamptest.business.role.service.RoleService;
 public class RoleServiceTest {
     
     @Mock
-    private RoleDao roleDao;
+    private RoleDaoImpl roleDao;
 
     @InjectMocks
     private RoleService roleService;

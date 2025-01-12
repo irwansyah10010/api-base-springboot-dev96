@@ -47,10 +47,12 @@ public class UserController {
         } catch (Exception e) {
             user = new BaseResponse<>(new UserResponse());
 
+            System.out.println(e.getLocalizedMessage());
+
             Optional<String> ofNullable = Optional.ofNullable(e.getMessage());
             
             user.setError(new ErrorResponse(ofNullable.orElse("no message")));
-            user.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            user.setStatus(e.getMessage().contains("not found")?HttpStatus.BAD_REQUEST.value():HttpStatus.INTERNAL_SERVER_ERROR.value());
             
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
@@ -132,6 +134,26 @@ public class UserController {
         BaseResponse<UserSoftdelete> baseResponse;
         try {
             baseResponse = userService.delete(userSoftdelete);
+            baseResponse.setStatus(HttpStatus.OK.value());
+        } catch (Exception e) {
+            baseResponse = new BaseResponse<>(new UserSoftdelete());
+
+            Optional<String> ofNullable = Optional.ofNullable(e.getMessage());
+            
+            baseResponse.setError(new ErrorResponse(ofNullable.orElse("no message")));
+            baseResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            
+            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("is-active")
+    ResponseEntity<BaseResponse<UserSoftdelete>> activation(@RequestBody BaseRequest<UserSoftdelete> userSoftdelete) {
+        BaseResponse<UserSoftdelete> baseResponse;
+        try {
+            baseResponse = userService.activation(userSoftdelete);
             baseResponse.setStatus(HttpStatus.OK.value());
         } catch (Exception e) {
             baseResponse = new BaseResponse<>(new UserSoftdelete());

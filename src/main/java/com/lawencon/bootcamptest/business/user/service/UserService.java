@@ -20,26 +20,25 @@ import com.lawencon.bootcamptest.base.dto.BaseResponse;
 import com.lawencon.bootcamptest.base.dto.attribute.Search;
 import com.lawencon.bootcamptest.base.dto.error.ErrorResponse;
 import com.lawencon.bootcamptest.base.dto.error.FieldError;
-import com.lawencon.bootcamptest.business.role.dao.RoleDao;
+import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImpl;
 import com.lawencon.bootcamptest.business.role.model.Role;
-import com.lawencon.bootcamptest.business.user.dao.UserDao;
+import com.lawencon.bootcamptest.business.user.dao.v1.UserDaoImpl;
 import com.lawencon.bootcamptest.business.user.dto.create.UserCreate;
 import com.lawencon.bootcamptest.business.user.dto.delete.UserHarddelete;
 import com.lawencon.bootcamptest.business.user.dto.delete.UserSoftdelete;
 import com.lawencon.bootcamptest.business.user.dto.detail.UserResponse;
 import com.lawencon.bootcamptest.business.user.dto.list.UsersRequest;
 import com.lawencon.bootcamptest.business.user.dto.list.UsersResponse;
-import com.lawencon.bootcamptest.business.user.model.StatusUser;
 import com.lawencon.bootcamptest.business.user.model.User;
 
 @Service
 public class UserService implements UserDetailsService{
 
     @Autowired
-	private UserDao userDao;
+	private UserDaoImpl userDao;
 
 	@Autowired
-	private RoleDao roleDao;
+	private RoleDaoImpl roleDao;
 
 	
 
@@ -47,7 +46,10 @@ public class UserService implements UserDetailsService{
 	public BaseResponse<UserCreate> createAndUpdate(BaseRequest<UserCreate> baseRequest){
 		User createUser = new User();
 		UserCreate user = baseRequest.getData();
-		User userByUsername = userDao.getByIdAndDetach(User.class, user.getUsername()); // change boolean
+		
+		User userByUsername=null;
+		if(baseRequest.getTypeRequest().equals("EDIT"))
+			userByUsername = userDao.getByIdAndDetach(User.class, user.getUsername()); // change boolean
 
 		/**
 		* list error
@@ -106,6 +108,9 @@ public class UserService implements UserDetailsService{
 		 */
 		BaseResponse<UserCreate> baseResponse = new BaseResponse<UserCreate>();
 
+		/**
+		 * check error validation
+		 */
 		if(!fieldErrors.isEmpty() || errorResponse.getMessage() != null){
 			errorResponse.setFields(fieldErrors);
 
@@ -132,22 +137,25 @@ public class UserService implements UserDetailsService{
 		if(baseRequest.getTypeRequest().equals("EDIT"))
 			userSave = userDao.update(createUser);
 		else{
-			StatusUser statusUser = new StatusUser();
-			statusUser.setEnabled(false);
-			statusUser.setIsLoginWeb(false);
-			statusUser.setInvalidLoginCounter(0);
+			/**
+			 * status move to login
+			 */
+			// StatusUser statusUser = new StatusUser();
+			// statusUser.setEnabled(false);
+			// statusUser.setIsLoginWeb(false);
+			// statusUser.setInvalidLoginCounter(0);
 			
-			StatusUser statusSave = userDao.save(statusUser);
+			// StatusUser statusSave = userDao.save(statusUser);
 
-			if(Optional.ofNullable(statusSave).isPresent())
-				createUser.setStatusUser(statusUser);
+			// if(Optional.ofNullable(statusSave).isPresent())
+			// 	createUser.setStatusUser(statusUser);
 			
 			userSave = userDao.save(createUser);
 		}
 
 
 		if(Optional.ofNullable(userSave).isPresent()){
-			user.setStatusId(userSave.getStatusUser().getId());
+			// user.setStatusId(userSave.getStatusUser().getId());
 
 			baseResponse.setData(user);
 		}
@@ -174,9 +182,28 @@ public class UserService implements UserDetailsService{
 		baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
 		return baseResponse;
-
 	}
 
+	@Transactional(rollbackOn = Exception.class)
+	public BaseResponse<UserSoftdelete> activation(BaseRequest<UserSoftdelete> baseRequest){
+		String username = baseRequest.getData().getUsername();
+		Boolean isActive = userDao.isActive(username);
+		
+		BaseResponse<UserSoftdelete> baseResponse = new BaseResponse<>();
+		if(isActive){
+			UserSoftdelete userIsActive = new UserSoftdelete();
+			userIsActive.setUsername(username);
+
+			baseResponse.setData(userIsActive);
+
+			return baseResponse;
+		}
+
+		baseResponse.setError(new ErrorResponse("User is active"));
+		baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+		return baseResponse;
+	}
 
 	/**
 	 * 

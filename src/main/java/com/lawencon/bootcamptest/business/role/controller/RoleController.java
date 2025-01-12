@@ -71,7 +71,7 @@ public class RoleController {
             Optional<String> ofNullable = Optional.ofNullable(e.getMessage());
 
             role.setError(new ErrorResponse(ofNullable.orElse("Message is null")));
-            role.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            role.setStatus(e.getMessage().contains("not found")?HttpStatus.BAD_REQUEST.value():HttpStatus.INTERNAL_SERVER_ERROR.value());
             
             return new ResponseEntity<>(role, HttpStatus.OK);
         }

@@ -1,0 +1,8 @@
+PUT http://localhost:8080/btest/user/is-active
+Content-Type: application/json
+
+{
+    "data":{
+        "username": "irwansyah.irwansyah"
+    }
+}

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lawencon.bootcamptest.base.dto.BaseResponse;
-import com.lawencon.bootcamptest.business.role.dao.RoleDao;
+import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImpl;
 import com.lawencon.bootcamptest.business.role.dto.detail.RoleResponse;
 import com.lawencon.bootcamptest.business.role.dto.list.RolesResponse;
 import com.lawencon.bootcamptest.business.role.model.Role;
@@ -16,7 +16,7 @@ import com.lawencon.bootcamptest.business.role.model.Role;
 public class RoleService {
     
     @Autowired
-    private RoleDao roleDao;
+    private RoleDaoImpl roleDao;
 
     public BaseResponse<List<RolesResponse>> getAll(){
         return new BaseResponse<>(roleDao.getAll());

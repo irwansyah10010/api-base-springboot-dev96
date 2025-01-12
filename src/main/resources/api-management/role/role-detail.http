@@ -1,0 +1,2 @@
+GET http://localhost:8080/btest/role/ADI
+Content-Type: application/json
