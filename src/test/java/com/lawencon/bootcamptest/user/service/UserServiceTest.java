@@ -23,9 +23,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.lawencon.bootcamptest.base.dto.BaseRequest;
 import com.lawencon.bootcamptest.base.dto.BaseResponse;
 import com.lawencon.bootcamptest.base.dto.attribute.Search;
-import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImpl;
+import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImplV1;
 import com.lawencon.bootcamptest.business.role.model.Role;
-import com.lawencon.bootcamptest.business.user.dao.v1.UserDaoImpl;
+import com.lawencon.bootcamptest.business.user.dao.v1.UserDaoImplV1;
 import com.lawencon.bootcamptest.business.user.dto.create.UserCreate;
 import com.lawencon.bootcamptest.business.user.dto.delete.UserHarddelete;
 import com.lawencon.bootcamptest.business.user.dto.delete.UserSoftdelete;
@@ -38,10 +38,10 @@ import com.lawencon.bootcamptest.business.user.service.UserService;
 public class UserServiceTest {
     
     @Mock
-    private UserDaoImpl userDao;
+    private UserDaoImplV1 userDao;
 
     @Mock
-    private RoleDaoImpl roleDao;
+    private RoleDaoImplV1 roleDao;
 
     @InjectMocks
     private UserService userService;
@@ -80,6 +80,7 @@ public class UserServiceTest {
         usersResponse1.setEmail("setEmail_1");
         usersResponse1.setRole(".setRole_1");
         usersResponse1.setProfile("tProfile_1");
+        usersResponse1.setIsActive(true);
 
         UsersResponse usersResponse2 = new UsersResponse();
         usersResponse2.setUsername("Username_2");
@@ -88,6 +89,7 @@ public class UserServiceTest {
         usersResponse2.setEmail("setEmail_2");
         usersResponse2.setRole(".setRole_2");
         usersResponse2.setProfile("tProfile_2");
+        usersResponse1.setIsActive(true);
 
         mockUsersResponses = Arrays.asList(
             usersResponse1,
@@ -135,7 +137,7 @@ public class UserServiceTest {
     public void testGetAll(){
 
         // present mock
-        when(userDao.getAll()).thenReturn(mockUsersResponses);
+        when(userDao.getAllAndActive()).thenReturn(mockUsersResponses);
 
         // call service
         BaseResponse<List<UsersResponse>> all = userService.getAll();
@@ -146,11 +148,11 @@ public class UserServiceTest {
         assertEquals("Username_1", all.getData().get(0).getUsername());
 
         // verify
-        verify(userDao, times(1)).getAll();
+        verify(userDao, times(1)).getAllAndActive();
     }
 
     @Test
-    public void testGetByUsername(){
+    public void testGetByUsername() throws Exception{
 
         // present mock
         when(userDao.getByUsername("Username")).thenReturn(Optional.of(mockUserResponse));

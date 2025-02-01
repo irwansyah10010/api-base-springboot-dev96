@@ -1,14 +1,7 @@
 package com.lawencon.bootcamptest.base;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Map.Entry;
-
-import javax.persistence.Query;
-
-import com.lawencon.bootcamptest.constant.OptionalBuilder;
 
 public class QueryBuilder<T> {
     

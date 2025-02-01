@@ -12,5 +12,5 @@ public class RoleResponse {
     private String roleCode;
     private String roleName;
     private String description;
-    private Object features;
+    // private Object features;
 }

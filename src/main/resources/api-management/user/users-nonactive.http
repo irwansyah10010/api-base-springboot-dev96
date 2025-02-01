@@ -1,0 +1,11 @@
+GET http://localhost:8080/btest/user/non-active
+Content-Type: application/json
+
+# {
+#     "data":{
+#         "search":{
+#             "fields":["username"],
+#             "value":"ad"
+#         }
+#     }
+# }

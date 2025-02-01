@@ -87,6 +87,33 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("non-active")
+    ResponseEntity<BaseResponse<List<UsersResponse>>> getAllAndNonactive(@RequestBody(required = false) BaseRequest<UsersRequest> usersRequest){
+        BaseResponse<List<UsersResponse>> users;
+
+        try {
+            if(Optional.ofNullable(usersRequest).isPresent())
+                users = userService.getAllAndNonactive(usersRequest);
+            else{
+                users = userService.getAllAndNonactive();
+            }
+
+            if(Optional.ofNullable(users.getStatus()).isEmpty())
+                users.setStatus(HttpStatus.OK.value());
+        } catch (Exception e) {
+            users = new BaseResponse<>(new ArrayList<>());
+
+            Optional<String> ofNullable = Optional.ofNullable(e.getMessage());
+            
+            users.setError(new ErrorResponse(ofNullable.orElse("no message")));
+            users.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @PostMapping("")
     ResponseEntity<BaseResponse<UserCreate>> save(@RequestBody BaseRequest<UserCreate> userCreate) {
         BaseResponse<UserCreate> baseResponse;

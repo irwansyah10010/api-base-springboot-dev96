@@ -10,16 +10,18 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.lawencon.bootcamptest.base.BaseDao;
+import com.lawencon.bootcamptest.base.dao.build.BaseDao;
 import com.lawencon.bootcamptest.business.role.dao.RoleDao;
 import com.lawencon.bootcamptest.business.role.dto.detail.RoleResponse;
 import com.lawencon.bootcamptest.business.role.dto.list.RolesResponse;
 import com.lawencon.bootcamptest.business.role.model.Role;
 
 @Repository
-public class RoleDaoImpl extends BaseDao<Role> implements RoleDao{
+@Profile("v1")
+public class RoleDaoImplV1 extends BaseDao<Role> implements RoleDao {
     
     @Override
     public List<RolesResponse> getAll(){
@@ -89,6 +91,11 @@ public class RoleDaoImpl extends BaseDao<Role> implements RoleDao{
         } catch(NoResultException e){
             throw new NoResultException("Role not found");
         }
-
     }
+
+    @Override
+    public Role getByIdAndDetach(String id) {
+        return super.getByIdAndDetach(Role.class, id);
+    }
+
 }

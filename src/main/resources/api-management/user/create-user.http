@@ -3,11 +3,11 @@ Content-Type: application/json
 
 {
     "data":{
-        "username": "irwansyah.irwansyah",
-        "fullName": "Irwansyah",
+        "username": "irwansyah.irwansyah2",
+        "fullName": "Irwansyah2",
         "placeOfBirth": "Bali",
         "dateOfBirth": "1990-12-12",
-        "email": "irwan@newbie.com",
+        "email": "irwan2@newbie.com",
         "role": "AD"
     }
 }

@@ -1,6 +1,5 @@
 package com.lawencon.bootcamptest.business.user.service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,9 +19,9 @@ import com.lawencon.bootcamptest.base.dto.BaseResponse;
 import com.lawencon.bootcamptest.base.dto.attribute.Search;
 import com.lawencon.bootcamptest.base.dto.error.ErrorResponse;
 import com.lawencon.bootcamptest.base.dto.error.FieldError;
-import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImpl;
+import com.lawencon.bootcamptest.business.role.dao.RoleDao;
 import com.lawencon.bootcamptest.business.role.model.Role;
-import com.lawencon.bootcamptest.business.user.dao.v1.UserDaoImpl;
+import com.lawencon.bootcamptest.business.user.dao.UserDao;
 import com.lawencon.bootcamptest.business.user.dto.create.UserCreate;
 import com.lawencon.bootcamptest.business.user.dto.delete.UserHarddelete;
 import com.lawencon.bootcamptest.business.user.dto.delete.UserSoftdelete;
@@ -35,12 +34,10 @@ import com.lawencon.bootcamptest.business.user.model.User;
 public class UserService implements UserDetailsService{
 
     @Autowired
-	private UserDaoImpl userDao;
+	private UserDao userDao;
 
 	@Autowired
-	private RoleDaoImpl roleDao;
-
-	
+	private RoleDao roleDao;
 
 	@Transactional(rollbackOn = Exception.class)
 	public BaseResponse<UserCreate> createAndUpdate(BaseRequest<UserCreate> baseRequest){
@@ -48,15 +45,15 @@ public class UserService implements UserDetailsService{
 		UserCreate user = baseRequest.getData();
 		
 		User userByUsername=null;
-		if(baseRequest.getTypeRequest().equals("EDIT"))
-			userByUsername = userDao.getByIdAndDetach(User.class, user.getUsername()); // change boolean
+		if(baseRequest.getTypeRequest().equals("EDIT")){
+			userByUsername = userDao.getByIdAndDetach(user.getUsername()); // change boolean
+		}
 
 		/**
 		* list error
 		**/ 
 		List<FieldError> fieldErrors = new ArrayList<>();
 		ErrorResponse errorResponse = new ErrorResponse();
-
 
 		/**
 		*  create validasi data
@@ -71,7 +68,7 @@ public class UserService implements UserDetailsService{
 		/*
 		 * check role is null
 		 */
-		Role role = roleDao.getByIdAndDetach(Role.class, user.getRole());
+		Role role = roleDao.getByIdAndDetach(user.getRole());
 		if(!Optional.ofNullable(role).isPresent())
 			fieldErrors.add(new FieldError("role", "role isn't available"));
 				    
@@ -122,7 +119,8 @@ public class UserService implements UserDetailsService{
 		}
 
 		if(baseRequest.getTypeRequest().equals("EDIT"))
-			createUser=userDao.getById(User.class, user.getUsername());
+			createUser=userDao.getByIdAndDetach(user.getUsername());
+		
 		
 		createUser.setRole(role);
 		createUser.setUsername(user.getUsername());
@@ -136,29 +134,14 @@ public class UserService implements UserDetailsService{
 		User userSave;
 		if(baseRequest.getTypeRequest().equals("EDIT"))
 			userSave = userDao.update(createUser);
-		else{
-			/**
-			 * status move to login
-			 */
-			// StatusUser statusUser = new StatusUser();
-			// statusUser.setEnabled(false);
-			// statusUser.setIsLoginWeb(false);
-			// statusUser.setInvalidLoginCounter(0);
-			
-			// StatusUser statusSave = userDao.save(statusUser);
-
-			// if(Optional.ofNullable(statusSave).isPresent())
-			// 	createUser.setStatusUser(statusUser);
-			
+		else
 			userSave = userDao.save(createUser);
-		}
+		
 
 
-		if(Optional.ofNullable(userSave).isPresent()){
-			// user.setStatusId(userSave.getStatusUser().getId());
-
+		if(Optional.ofNullable(userSave).isPresent())
 			baseResponse.setData(user);
-		}
+		
 
 		return baseResponse;
 	}
@@ -205,16 +188,11 @@ public class UserService implements UserDetailsService{
 		return baseResponse;
 	}
 
-	/**
-	 * 
-	 * @param baseRequest
-	 * @return
-	 */
 	@Transactional(rollbackOn = Exception.class)
 	public BaseResponse<UserHarddelete> hardDelete(BaseRequest<UserHarddelete> baseRequest){
 		Search search = baseRequest.getData().getSearch();
 
-		Boolean isDelete = userDao.isDelete(search, User.class);
+		Boolean isDelete = userDao.isDelete((String) search.getValue());
 		
 		BaseResponse<UserHarddelete> baseResponse = new BaseResponse<>();
 		if(isDelete){
@@ -236,14 +214,14 @@ public class UserService implements UserDetailsService{
 	 * 
 	 */
 	public BaseResponse<List<UsersResponse>> getAll(){
-		return new BaseResponse<>(userDao.getAll());
+		return new BaseResponse<>(userDao.getAllAndActive());
 	}
 	
 	/*
 	 * 
 	 */
 	public BaseResponse<List<UsersResponse>> getAll(Integer page, Integer limit){
-		return new BaseResponse<>(userDao.getAll(page, limit));
+		return new BaseResponse<>(userDao.getAllAndActive(page, limit));
 	}
 
 	/*
@@ -254,12 +232,11 @@ public class UserService implements UserDetailsService{
 		List<String> fields = Arrays.asList("username");
 
 		// create validasi data
-
 		Search search = usersRequest.getData().getSearch();
 		List<String> fieldNows = search.getFields();
 
 		if(fields.equals(fieldNows))
-			return new BaseResponse<>(userDao.getAll((String) search.getValue(),page, limit));
+			return new BaseResponse<>(userDao.getAllAndActive((String) search.getValue(),page, limit));
 
 		BaseResponse<List<UsersResponse>> baseResponse = new BaseResponse<>(new ArrayList<>());
 		baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -277,15 +254,48 @@ public class UserService implements UserDetailsService{
 		return baseResponse;
 	}
 
+	public BaseResponse<List<UsersResponse>> getAllAndNonactive(){
+		return new BaseResponse<>(userDao.getAll());
+	}
 
+	/*
+	 * 
+	 */
+	public BaseResponse<List<UsersResponse>> getAllAndNonactive(BaseRequest<UsersRequest> usersRequest){
 
-    public BaseResponse<UserResponse> getByUsername(String username){
+		List<String> fields = Arrays.asList("username");
+
+		// create validasi data
+		Search search = usersRequest.getData().getSearch();
+		List<String> fieldNows = search.getFields();
+
+		if(fields.equals(fieldNows))
+			return new BaseResponse<>(userDao.getAll((String) search.getValue()));
+
+		BaseResponse<List<UsersResponse>> baseResponse = new BaseResponse<>(new ArrayList<>());
+		baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+		ErrorResponse errorResponse = new ErrorResponse("wrong fields");
+
+		/*
+		 * check detail field
+		 */
+		fieldNows.forEach(field ->{
+			
+		});
+		baseResponse.setError(errorResponse);
+
+		return baseResponse;
+	}
+
+    public BaseResponse<UserResponse> getByUsername(String username) throws Exception{
         return new BaseResponse<>(userDao.getByUsername(username).get());
     }
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userByUsername = userDao.loadUsername(username);
+        // Optional<User> userByUsername = userDao.getByUsername(username);
+		Optional<User> userByUsername = Optional.ofNullable(null);
 
         if(userByUsername.isPresent()){
             User user = userByUsername.get();

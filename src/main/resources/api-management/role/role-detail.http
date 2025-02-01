@@ -1,2 +1,2 @@
-GET http://localhost:8080/btest/role/ADI
+GET http://localhost:8080/btest/role/AD
 Content-Type: application/json

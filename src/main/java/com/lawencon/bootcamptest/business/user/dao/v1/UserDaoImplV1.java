@@ -2,7 +2,6 @@ package com.lawencon.bootcamptest.business.user.dao.v1;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,19 +15,23 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.lawencon.bootcamptest.base.BaseDao;
+import com.lawencon.bootcamptest.base.dao.build.BaseDao;
 import com.lawencon.bootcamptest.business.file.model.File;
 import com.lawencon.bootcamptest.business.role.model.Role;
+import com.lawencon.bootcamptest.business.user.dao.UserDao;
 import com.lawencon.bootcamptest.business.user.dto.detail.UserResponse;
-import com.lawencon.bootcamptest.business.user.dto.detail.UserResponseV2;
 import com.lawencon.bootcamptest.business.user.dto.list.UsersResponse;
 import com.lawencon.bootcamptest.business.user.model.StatusUser;
 import com.lawencon.bootcamptest.business.user.model.User;
 
+import liquibase.pro.packaged.T;
+
 @Repository
-public class UserDaoImpl extends BaseDao<User>{
+@Profile("v1")
+public class UserDaoImplV1 extends BaseDao<User> implements UserDao{
     
     public Optional<User> loadUsername(String username){
         Query nativeQuery = this.getConnection()
@@ -40,12 +43,7 @@ public class UserDaoImpl extends BaseDao<User>{
         return Optional.ofNullable(singleResult);
     }
 
-    /**
-     * 
-     * @param username
-     * @return
-     * @throws NoResultException
-     */
+    @Override
     public Optional<UserResponse> getByUsername(String username) throws NoResultException {
         CriteriaBuilder criteriaBuilder = getConnection().getCriteriaBuilder();
 
@@ -109,12 +107,6 @@ public class UserDaoImpl extends BaseDao<User>{
         }
     }
 
-
-    /**
-     * 
-     * @param username
-     * @return
-     */
     private TypedQuery<Object> queryOfGetAll(String username){
         CriteriaBuilder criteriaBuilder = getConnection().getCriteriaBuilder();
         CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
@@ -148,6 +140,7 @@ public class UserDaoImpl extends BaseDao<User>{
         return getConnection().createQuery(criteriaQuery);
     }
 
+    @Override
     public List<UsersResponse> getAll(){
         TypedQuery<Object> query = queryOfGetAll(null);
 
@@ -178,7 +171,69 @@ public class UserDaoImpl extends BaseDao<User>{
         return usersResponses;
     }
 
-    public List<UsersResponse> getAll(Integer page, Integer limit){
+    @Override
+    public List<UsersResponse> getAll(String username){
+        TypedQuery<Object> query = queryOfGetAll(username);
+
+        List<Object> users = query.getResultList();
+
+        List<UsersResponse> usersResponses = new ArrayList<>();
+        users.forEach(usr -> {
+            UsersResponse usersResponse = new UsersResponse();
+
+            Object[] u = (Object[]) usr;
+            
+            usersResponse.setUsername((String) u[0]);
+            usersResponse.setFullName((String) u[1]);
+            usersResponse.setRole((String) u[2] +" - "+(String) u[3]);
+            usersResponse.setPlaceOfBirth((String) u[4]);
+            usersResponse.setEmail((String) u[5]);
+
+            usersResponse.setProfile(Optional.ofNullable((String) u[6]).orElse(null));
+
+            usersResponse.setEnabled(Optional.ofNullable((Boolean) u[7]).orElse(false));
+            usersResponse.setIsLoginWeb(Optional.ofNullable((Boolean) u[8]).orElse(false));
+            usersResponse.setIsActive((Boolean) u[9]);
+
+            usersResponses.add(usersResponse);
+        });
+
+        return usersResponses;
+    }
+
+    @Override
+    public List<UsersResponse> getAllAndActive(){
+        TypedQuery<Object> query = queryOfGetAll(null);
+
+        List<Object> users = query.getResultList();
+
+        List<UsersResponse> usersResponses = new ArrayList<>();
+        users.forEach(usr -> {
+
+            UsersResponse usersResponse = new UsersResponse();
+
+            Object[] u = (Object[]) usr;
+            
+            usersResponse.setUsername((String) u[0]);
+            usersResponse.setFullName((String) u[1]);
+            usersResponse.setRole((String) u[2] +" - "+(String) u[3]);
+            usersResponse.setPlaceOfBirth((String) u[4]);
+            usersResponse.setEmail((String) u[5]);
+
+            usersResponse.setProfile(Optional.ofNullable((String) u[6]).orElse(null));
+
+            usersResponse.setEnabled(Optional.ofNullable((Boolean) u[7]).orElse(false));
+            usersResponse.setIsLoginWeb(Optional.ofNullable((Boolean) u[8]).orElse(false));
+            usersResponse.setIsActive((Boolean) u[9]);
+
+            usersResponses.add(usersResponse);
+        });
+
+        return usersResponses;
+    }
+
+    @Override
+    public List<UsersResponse> getAllAndActive(Integer page, Integer limit){
         
         Integer start = limit * (page - 1);
         Integer last = start + limit;
@@ -214,7 +269,8 @@ public class UserDaoImpl extends BaseDao<User>{
         return usersResponses;
     }
 
-    public List<UsersResponse> getAll(String username, Integer page, Integer limit){
+    @Override
+    public List<UsersResponse> getAllAndActive(String username, Integer page, Integer limit){
         Integer start = limit * (page - 1);
         Integer last = start + limit;
 
@@ -248,6 +304,8 @@ public class UserDaoImpl extends BaseDao<User>{
         return usersResponses;
     }
 
+
+    @Override
     public Boolean isSoftDelete(String username){
         User userById = getById(User.class, username);
 
@@ -263,6 +321,7 @@ public class UserDaoImpl extends BaseDao<User>{
         return false;
     }
 
+    @Override
     public Boolean isActive(String username){
         User userById = getById(User.class, username);
         
@@ -277,5 +336,30 @@ public class UserDaoImpl extends BaseDao<User>{
 
         return false;
     }
+
+    @Override
+    public Boolean isDelete(String username) {
+        
+        throw new UnsupportedOperationException("Unimplemented method 'isDelete'");
+    }
+
+    
+    @Override
+    public User getByIdAndDetach(String id) {
+        return super.getByIdAndDetach(User.class,id);
+    }
+
+
+    @Override
+    public User update(User entityClass) {
+        return super.update(entityClass);
+    }
+
+
+    @Override
+    public User save(User entityClass) {
+        return super.save(entityClass);
+    }
+
 
 }

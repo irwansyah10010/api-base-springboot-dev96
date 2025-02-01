@@ -18,17 +18,16 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.lawencon.bootcamptest.base.dto.BaseResponse;
-import com.lawencon.bootcamptest.business.role.dao.v1.RoleDaoImpl;
+import com.lawencon.bootcamptest.business.role.dao.RoleDao;
 import com.lawencon.bootcamptest.business.role.dto.detail.RoleResponse;
 import com.lawencon.bootcamptest.business.role.dto.list.RolesResponse;
-import com.lawencon.bootcamptest.business.role.model.Role;
 import com.lawencon.bootcamptest.business.role.service.RoleService;
 
 @SpringBootTest
 public class RoleServiceTest {
     
     @Mock
-    private RoleDaoImpl roleDao;
+    private RoleDao roleDao;
 
     @InjectMocks
     private RoleService roleService;
@@ -47,7 +46,7 @@ public class RoleServiceTest {
         );
 
 
-        mockRole = new RoleResponse("AD", "Admin", "desc", null);
+        mockRole = new RoleResponse("AD", "Admin", "desc");
     }
 
     @Test
@@ -69,7 +68,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void testGetByRoleCode(){
+    public void testGetByRoleCode() throws Exception{
 
         // present mock
         when(roleDao.getByRoleCode("AD")).thenReturn(Optional.of(mockRole));
