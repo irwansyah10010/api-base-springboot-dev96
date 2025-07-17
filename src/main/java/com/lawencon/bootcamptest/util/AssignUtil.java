@@ -1,6 +1,8 @@
 package com.lawencon.bootcamptest.util;
 
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -45,6 +47,31 @@ public class AssignUtil {
         }else
             throw new IllegalArgumentException("field and object is not same");
         
+    }
+
+    public Map<String, Object> classToMap(Object objClass) throws IllegalArgumentException, IllegalAccessException{
+        Class<?> objClazz = objClass.getClass();
+        Field[] fields = objClazz.getDeclaredFields();
+
+        Map<String, Object> dataMap = new LinkedHashMap<>();
+
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+
+            Class<?> typeClass = field.getType();
+
+            field.setAccessible(true);
+
+            Object data = field.get(objClazz);
+
+            if(Optional.ofNullable(data).isPresent())
+                dataMap.put(field.getName(), typeClass.cast(data));
+        }
+
+        if(dataMap.size() == 0)
+            throw new IllegalArgumentException("Data is'nt available");
+
+        return dataMap;
     }
 
     public boolean isEqual(){
