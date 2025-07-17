@@ -27,8 +27,6 @@ import com.lawencon.bootcamptest.business.user.dto.list.UsersResponse;
 import com.lawencon.bootcamptest.business.user.model.StatusUser;
 import com.lawencon.bootcamptest.business.user.model.User;
 
-import liquibase.pro.packaged.T;
-
 @Repository
 @Profile("v1")
 public class UserDaoImplV1 extends BaseDao<User> implements UserDao{
@@ -343,7 +341,6 @@ public class UserDaoImplV1 extends BaseDao<User> implements UserDao{
         throw new UnsupportedOperationException("Unimplemented method 'isDelete'");
     }
 
-    
     @Override
     public User getByIdAndDetach(String id) {
         return super.getByIdAndDetach(User.class,id);
@@ -360,6 +357,5 @@ public class UserDaoImplV1 extends BaseDao<User> implements UserDao{
     public User save(User entityClass) {
         return super.save(entityClass);
     }
-
 
 }

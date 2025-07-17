@@ -45,9 +45,9 @@ public class UserService implements UserDetailsService{
 		UserCreate user = baseRequest.getData();
 		
 		User userByUsername=null;
-		if(baseRequest.getTypeRequest().equals("EDIT")){
+		if(baseRequest.getTypeRequest().equals("EDIT"))
 			userByUsername = userDao.getByIdAndDetach(user.getUsername()); // change boolean
-		}
+		
 
 		/**
 		* list error
@@ -117,10 +117,6 @@ public class UserService implements UserDetailsService{
 
 			return baseResponse;
 		}
-
-		if(baseRequest.getTypeRequest().equals("EDIT"))
-			createUser=userDao.getByIdAndDetach(user.getUsername());
-		
 		
 		createUser.setRole(role);
 		createUser.setUsername(user.getUsername());

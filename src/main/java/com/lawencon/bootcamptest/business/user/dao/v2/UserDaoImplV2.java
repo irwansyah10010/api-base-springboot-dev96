@@ -1,6 +1,8 @@
 package com.lawencon.bootcamptest.business.user.dao.v2;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.Query;
@@ -125,43 +127,30 @@ public class UserDaoImplV2 extends BaseDao<User> implements UserDao{
         return getAll(UsersResponse.class, page, limit);
     }
 
-
-
-
-    /** migrasi v1 */
     @Override
     public Boolean isSoftDelete(String username) {
-        User userById = super.getById(User.class, username);
+        Map<String, Object> data = new HashMap<>();
+        data.put("isActive", false);
 
-        if(Optional.ofNullable(userById).isPresent()){
-            Boolean isActive = userById.getIsActive();
-            if(isActive){
-                userById.setIsActive(false);
+        initUpdate(User.class)
+            .setFieldsUpdate(data)
+                .search()
+                .equal("username", username)
+                .closeSearch();
 
-                return true;
-            }
-        }
-
-        return false;
+        return updated();
     }
 
-    /** migrasi v1 */
     @Override
     public Boolean isActive(String username) {
-        User userById = super.getById(User.class, username);
-        
-        if(Optional.ofNullable(userById).isPresent()){
-            Boolean isActive = userById.getIsActive();
-            if(!isActive){
-                userById.setIsActive(true);
+        Map<String, Object> data = new HashMap<>();
+        data.put("isActive", true);
 
-                return true;
-            }
-        }
+        initUpdate(User.class)
+            .setFieldsUpdate(data);
 
-        return false;
+        return updated();
     }
-
 
     @Override
     public Boolean isDelete(String username) {

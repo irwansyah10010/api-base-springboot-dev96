@@ -171,7 +171,7 @@ public class UserServiceTest {
     @Test
     public void create(){
         // Mock behavior untuk simulasikan create
-        when(roleDao.getByIdAndDetach(Role.class, roleCreate.getRoleCode())).thenReturn(roleCreate);
+        when(roleDao.getByIdAndDetach(roleCreate.getRoleCode())).thenReturn(roleCreate);
         when(userDao.save(any(User.class))).thenReturn(mockUser);
         
         // Panggil service untuk membuat data
@@ -185,16 +185,15 @@ public class UserServiceTest {
         assertEquals(null, response.getError());
 
         // Verifikasi bahwa metode save() dipanggil satu kali
-        verify(roleDao, times(1)).getByIdAndDetach(Role.class, roleCreate.getRoleCode());
+        verify(roleDao, times(1)).getByIdAndDetach(roleCreate.getRoleCode());
         verify(userDao, times(1)).save(any(User.class));
     }
 
     @Test
     public void update(){
         // Mock behavior untuk simulasikan update
-        when(roleDao.getByIdAndDetach(Role.class, roleCreate.getRoleCode())).thenReturn(roleCreate);
-        when(userDao.getByIdAndDetach(User.class, mockUserUpdate.getUsername())).thenReturn(mockUser);
-        when(userDao.getById(User.class, mockUserUpdate.getUsername())).thenReturn(mockUser);
+        when(roleDao.getByIdAndDetach(roleCreate.getRoleCode())).thenReturn(roleCreate);
+        when(userDao.getByIdAndDetach(mockUserUpdate.getUsername())).thenReturn(mockUser);
         when(userDao.update(any(User.class))).thenReturn(mockUser);
         
         // Panggil service untuk membuat data
@@ -209,7 +208,8 @@ public class UserServiceTest {
         assertNotEquals(mockUser, mockUserUpdate);
 
         // Verifikasi bahwa jumlah metode mock yang dipanggil
-        verify(roleDao, times(1)).getByIdAndDetach(Role.class, roleCreate.getRoleCode());
+        verify(roleDao, times(1)).getByIdAndDetach(roleCreate.getRoleCode());
+        verify(userDao, times(1)).getByIdAndDetach(mockUserUpdate.getUsername());
         verify(userDao, times(1)).update(any(User.class));
     }
 
@@ -235,14 +235,14 @@ public class UserServiceTest {
 
     @Test
     public void hardDelete(){
+        // Mock behavior untuk simulasikan hard delete
+        when(userDao.isDelete(mockUser.getUsername())).thenReturn(true);
+
+        // panggil service untuk delete data
         Search search = new Search();
         search.setFields(Arrays.asList("username"));
         search.setValue(mockUser.getUsername());
 
-        // Mock behavior untuk simulasikan hard delete
-        when(userDao.isDelete(search, User.class)).thenReturn(true);
-
-        // panggil service untuk delete data
         BaseRequest<UserHarddelete> baseRequest = new BaseRequest<>();
         UserHarddelete userHarddelete = new UserHarddelete();
         userHarddelete.setSearch(search);
@@ -254,7 +254,7 @@ public class UserServiceTest {
         assertEquals(null, response.getError());
 
         // verifikasi jumlah pemanggilan method
-        verify(userDao, times(1)).isDelete(search, User.class);
+        verify(userDao, times(1)).isDelete(mockUser.getUsername());
     }
 
     @Test
