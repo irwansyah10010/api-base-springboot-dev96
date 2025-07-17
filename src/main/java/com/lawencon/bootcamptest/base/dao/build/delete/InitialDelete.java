@@ -1,7 +1,7 @@
-package com.lawencon.bootcamptest.base.dao.build.updateordelete;
+package com.lawencon.bootcamptest.base.dao.build.delete;
 
 import com.lawencon.bootcamptest.base.dao.build.filter.DefinitionSearch;
 
-public interface InitialUpdateDelete {
+public interface InitialDelete {
     public DefinitionSearch search();
 }

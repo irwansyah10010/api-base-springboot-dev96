@@ -26,15 +26,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lawencon.bootcamptest.base.constanta.LogicalOperator;
 import com.lawencon.bootcamptest.base.dao.DaoBuilder;
+import com.lawencon.bootcamptest.base.dao.build.delete.InitialDelete;
 import com.lawencon.bootcamptest.base.dao.build.filter.DefinitionSearch;
 import com.lawencon.bootcamptest.base.dao.build.getter.DefinitionJoin;
 import com.lawencon.bootcamptest.base.dao.build.getter.InitialGetter;
-import com.lawencon.bootcamptest.base.dao.build.updateordelete.InitialUpdateDelete;
+import com.lawencon.bootcamptest.base.dao.build.update.ConditionUpdate;
+import com.lawencon.bootcamptest.base.dao.build.update.InitialUpdate;
 import com.lawencon.bootcamptest.base.dto.attribute.Search;
 import com.lawencon.bootcamptest.util.AssignUtil;
 
 public class BaseDao<T> extends DaoBuilder<T>
-implements InitialGetter, InitialUpdateDelete,
+implements InitialGetter, InitialDelete, InitialUpdate,
+ConditionUpdate,
 DefinitionJoin, DefinitionSearch{
 
 	@Autowired
@@ -49,8 +52,10 @@ DefinitionJoin, DefinitionSearch{
 	List<String> fieldnames;
 	Map<Class<?>, List<String>> joinFieldnames;
 
+	Map<String, Object> fieldsUpt;
+
 	/**
-	 * initial builder
+	 * initial initial builder
 	 * 
 	 * @param clazzEntity -> class entity build
 	 * @param fieldnames -> shown fields needed
@@ -67,24 +72,20 @@ DefinitionJoin, DefinitionSearch{
 		return this;
 	}
 
-	public InitialUpdateDelete initDelete(Class<T> entityClass){
+	public InitialDelete initDelete(Class<T> entityClass){
 		initCriteriaDelete(entityClass);
 		entityRoot = getCriteriaDelete().from(entityClass);
 
 		return this;
 	}
 
-	public InitialUpdateDelete initUpdate(Class<T> entityClass){
+	public InitialUpdate initUpdate(Class<T> entityClass){
 		initCriteriaUpdate(entityClass);
-		getCriteriaUpdate().from(entityClass);
+		entityRoot = getCriteriaUpdate().from(entityClass);
 
 		return this;
 	}
 
-	
-	/***
-	 * close all variable
-	 */
 	public void close(){
 		clearBuilder();
 	
@@ -96,6 +97,47 @@ DefinitionJoin, DefinitionSearch{
 		fieldnames=null;
 		joinFieldnames=null;
 	}
+
+	/***
+	 * close initial builder
+	 */
+
+	/***
+	 *  initial field update
+	 */
+	public ConditionUpdate setFieldsUpdate(Object objClass){
+
+		try {
+			fieldsUpt = assignUtil.classToMap(objClass);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		for (Entry<String, Object> dataMap : fieldsUpt.entrySet()) {
+			getCriteriaUpdate().set(entityRoot.get(dataMap.getKey()), dataMap.getValue());
+		}
+
+		return this;
+	}
+
+
+	public ConditionUpdate setFieldsUpdate(Map<String, Object> dataObj){
+		
+		for (Entry<String, Object> dataMap : dataObj.entrySet()) {
+			
+			getCriteriaUpdate().set(entityRoot.get(dataMap.getKey()), dataMap.getValue());
+			
+			
+		}
+
+		return this;
+	}
+	/***
+	 *  close field update
+	 */
+
 
 	/**
 	 * initial join
@@ -258,7 +300,7 @@ DefinitionJoin, DefinitionSearch{
 	* end create definition search
 	*/
 	/*
-	 * interface search
+	 * interface search (v1)
 	 */
 	public void searchEqual(Map<String, Object> lookUp, LogicalOperator relation){
 		if(!Optional.ofNullable(conjunction).isPresent())
@@ -552,15 +594,18 @@ DefinitionJoin, DefinitionSearch{
 		return query.executeUpdate() > 0;
 	}
 
-	public T updated(T entity){
+
+	@SuppressWarnings("null")
+	public Boolean updated(){
 		getCriteriaUpdate().where(conjunction);
-		
-		getConnection().merge(entity);
-		getConnection().flush();
+
+		Query query=null;
+		query = getConnection().createQuery(getCriteriaUpdate());
+
 
 		close();
 
-		return entity;
+		return query.executeUpdate() > 0;
 	}
 
 	public Boolean isDelete(Search search, Class<T> clazz){
