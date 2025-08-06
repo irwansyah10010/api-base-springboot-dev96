@@ -34,7 +34,6 @@ public class UserDaoImplV2 extends BaseDao<User> implements UserDao{
         return Optional.ofNullable(singleResult);
     }
 
-
     @Override
     public Optional<UserResponse> getByUsername(String username) throws Exception{
         initGetter(User.class,
@@ -134,9 +133,7 @@ public class UserDaoImplV2 extends BaseDao<User> implements UserDao{
 
         initUpdate(User.class)
             .setFieldsUpdate(data)
-                .search()
-                .equal("username", username)
-                .closeSearch();
+                .search().equal("username", username).and().closeSearch();
 
         return updated();
     }
@@ -147,7 +144,8 @@ public class UserDaoImplV2 extends BaseDao<User> implements UserDao{
         data.put("isActive", true);
 
         initUpdate(User.class)
-            .setFieldsUpdate(data);
+            .setFieldsUpdate(data)
+                .search().equal("username", username).and().closeSearch();
 
         return updated();
     }
@@ -166,7 +164,6 @@ public class UserDaoImplV2 extends BaseDao<User> implements UserDao{
     public User getByIdAndDetach(String id) {
         return super.getByIdAndDetach(User.class,id);
     }
-
 
     @Override
     public User update(User entityClass) {
