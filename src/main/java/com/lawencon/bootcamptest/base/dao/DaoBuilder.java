@@ -7,8 +7,6 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 
-
-
 public class DaoBuilder<T> {
 
     @PersistenceContext
@@ -19,6 +17,7 @@ public class DaoBuilder<T> {
 	CriteriaQuery<Object[]> criteriaQuery;
 	CriteriaDelete<T> criteriaDelete;
 	CriteriaUpdate<T> criteriaUpdate;
+
 
     public EntityManager getConnection(){
 		return em;
@@ -58,7 +57,6 @@ public class DaoBuilder<T> {
     public CriteriaQuery<Object[]> getCriteriaQuery() {
         return criteriaQuery;
     }
-
 
 	public CriteriaDelete<T> getCriteriaDelete() {
 		return criteriaDelete;

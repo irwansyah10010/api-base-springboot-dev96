@@ -72,6 +72,11 @@ DefinitionJoin, DefinitionSearch{
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param entityClass
+	 * @return
+	 */
 	public InitialDelete initDelete(Class<T> entityClass){
 		initCriteriaDelete(entityClass);
 		entityRoot = getCriteriaDelete().from(entityClass);
@@ -79,6 +84,11 @@ DefinitionJoin, DefinitionSearch{
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param entityClass
+	 * @return
+	 */
 	public InitialUpdate initUpdate(Class<T> entityClass){
 		initCriteriaUpdate(entityClass);
 		entityRoot = getCriteriaUpdate().from(entityClass);
@@ -86,17 +96,17 @@ DefinitionJoin, DefinitionSearch{
 		return this;
 	}
 
-	public void close(){
-		clearBuilder();
+	// public void close(){
+	// 	clearBuilder();
 	
-		conjunction=null;
+	// 	conjunction=null;
 	
-		entityRoot=null;
-		joinRoot=null;
+	// 	entityRoot=null;
+	// 	joinRoot=null;
 	
-		fieldnames=null;
-		joinFieldnames=null;
-	}
+	// 	fieldnames=null;
+	// 	joinFieldnames=null;
+	// }
 
 	/***
 	 * close initial builder
@@ -126,10 +136,7 @@ DefinitionJoin, DefinitionSearch{
 	public ConditionUpdate setFieldsUpdate(Map<String, Object> dataObj){
 		
 		for (Entry<String, Object> dataMap : dataObj.entrySet()) {
-			
 			getCriteriaUpdate().set(entityRoot.get(dataMap.getKey()), dataMap.getValue());
-			
-			
 		}
 
 		return this;
@@ -503,8 +510,6 @@ DefinitionJoin, DefinitionSearch{
 			}
 		} );
 
-		close();
-
 		return resultList;
 	}
 
@@ -548,7 +553,6 @@ DefinitionJoin, DefinitionSearch{
 			}
 		} );
 
-		close();
 		return resultList;
 	}
 
@@ -571,14 +575,10 @@ DefinitionJoin, DefinitionSearch{
 
 			assignUtil.objToClass(result, obj);
 
-			close();
-
 			return Optional.ofNullable(obj);	
 		} catch (NoResultException e){
-			close();
 			throw new NoResultException("data not found");
 		} catch (Exception e) {
-			close();
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -589,21 +589,14 @@ DefinitionJoin, DefinitionSearch{
 		
 		Query query = getConnection().createQuery(getCriteriaDelete());
 
-		close();
-
 		return query.executeUpdate() > 0;
 	}
 
-
-	@SuppressWarnings("null")
 	public Boolean updated(){
 		getCriteriaUpdate().where(conjunction);
 
 		Query query=null;
-		query = getConnection().createQuery(getCriteriaUpdate());
-
-
-		close();
+			query = getConnection().createQuery(getCriteriaUpdate());
 
 		return query.executeUpdate() > 0;
 	}
